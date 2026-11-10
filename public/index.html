@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#4338ca">
+  <meta name="description" content="Compare KK direto com compra e revenda de diamantes no Poke Alliance. Simule orçamento, taxas e disponibilidade de ofertas.">
+  <title>KK ou DD? · Calculadora Poke Alliance</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%234338ca'/%3E%3Cpath d='M16 24 24 14h16l8 10-16 28z' fill='%23c5f277'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="styles.css">
+  <script defer src="calculator.js"></script>
+  <script defer src="app.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#simulador">Pular para a calculadora</a>
+  <header class="site-header"><div class="header-inner">
+    <a class="brand" href="#top" aria-label="KK ou DD, início"><span class="brand-icon" aria-hidden="true">◇</span> KK<span class="brand-or">ou</span>DD<span class="brand-dot">.</span></a>
+    <nav aria-label="Navegação principal"><a href="#simulador">Calculadora</a><a href="#como-funciona">Como funciona</a></nav>
+    <span class="game-tag">POKE ALLIANCE</span>
+  </div></header>
+  <main id="top" class="page">
+    <section class="intro" aria-labelledby="title"><div><div class="eyebrow"><span></span> MAIS CLAREZA EM CADA TROCA</div>
+      <h1 id="title">Seu dinheiro.<br><span>Mais KK.</span></h1>
+      <p>Comprar KK direto ou revender diamantes?<br class="desktop-break"> Compare os caminhos antes de decidir.</p></div>
+      <aside class="unit-card" aria-label="Conversão de unidades"><span class="unit-symbol" aria-hidden="true">◇</span><div><span class="small-label">DE OLHO NAS UNIDADES</span><strong>450 K = 0,45 KK</strong><p>1 K = mil moedas · 1 KK = 1 milhão</p></div></aside>
+    </section>
+    <div id="simulador" class="workspace">
+      <section class="panel inputs-panel" aria-labelledby="inputs-heading">
+        <div class="panel-heading"><div><span class="step">01 / SUA SIMULAÇÃO</span><h2 id="inputs-heading">Faça as contas</h2></div><button id="reset" class="text-button" type="button">Restaurar</button></div>
+        <form id="calculator-form" novalidate>
+          <div class="field"><label for="budget">Quanto você quer gastar?</label><div class="input-shell large"><span>R$</span><input id="budget" name="budget" type="text" inputmode="decimal" value="190,00" autocomplete="off" aria-describedby="budget-error"></div><span class="error" id="budget-error"></span></div>
+          <div class="field-row">
+            <div class="field"><label for="ddPrice">Preço de 1 DD</label><div class="input-shell"><span>R$</span><input id="ddPrice" name="ddPrice" type="text" inputmode="decimal" value="0,60" autocomplete="off" aria-describedby="ddPrice-error"></div><span class="error" id="ddPrice-error"></span></div>
+            <div class="field"><label for="kkPrice">Preço de 1 KK</label><div class="input-shell"><span>R$</span><input id="kkPrice" name="kkPrice" type="text" inputmode="decimal" value="1,50" autocomplete="off" aria-describedby="kkPrice-error"></div><span class="error" id="kkPrice-error"></span></div>
+          </div>
+          <div class="field"><label for="resale">Revenda de cada DD</label><div class="input-shell"><input id="resale" name="resale" type="text" inputmode="decimal" value="450" autocomplete="off" aria-describedby="resale-hint resale-error"><span>K</span></div><span id="resale-hint" class="hint">Valor em milhares de moedas. Ex.: 450 = 450 mil.</span><span class="error" id="resale-error"></span>
+            <div class="presets" role="group" aria-label="Preços de revenda"><button type="button" data-price="450" aria-pressed="true">450 K</button><button type="button" data-price="475" aria-pressed="false">475 K</button><button type="button" data-price="500" aria-pressed="false">500 K</button></div>
+          </div>
+          <div class="field"><label for="fee">Taxa de venda</label><div class="input-shell"><input id="fee" name="fee" type="text" inputmode="decimal" value="0" autocomplete="off" aria-describedby="fee-hint fee-error"><span>%</span></div><span id="fee-hint" class="hint">Use 0% ao vender para uma oferta de compra.</span><span class="error" id="fee-error"></span></div>
+          <div class="field last-field"><label for="available">DD nas ofertas de compra <span class="optional">Opcional</span></label><div class="input-shell"><input id="available" name="available" type="text" inputmode="numeric" placeholder="Sem limite informado" autocomplete="off" aria-describedby="available-hint available-error"><span>DD</span></div><span id="available-hint" class="hint">Quantos DD as ofertas aceitam neste preço? Limitamos a compra a essa quantidade.</span><span class="error" id="available-error"></span></div>
+          <p class="input-note">Use vírgula ou ponto decimal, sem separador de milhar.</p>
+        </form>
+        <div class="local-note"><span aria-hidden="true">●</span><span id="storage-note">Cálculos no seu navegador. Sem conexão com o jogo.</span></div>
+      </section>
+      <section class="results" aria-labelledby="results-heading">
+        <h2 id="results-heading" class="sr-only">Resultado da comparação</h2>
+        <div id="invalid-state" class="panel invalid-state" hidden><strong>Vamos ajustar os valores?</strong><p>Confira os campos destacados para ver uma comparação válida.</p></div>
+        <div id="valid-results">
+          <div class="recommendation" id="recommendation"><div class="recommendation-top"><span class="small-label">O CAMINHO QUE RENDE MAIS KK</span><span class="result-price" id="result-price">450 K / DD</span></div><h2 id="recommendation-title">Comprar DD e revender</h2><p id="recommendation-copy"></p><div class="recommendation-bottom"><span id="gain-label">Vantagem sobre KK direto</span><strong id="gain"></strong></div></div>
+          <div class="comparison-grid">
+            <article class="metric-card"><span class="metric-icon" aria-hidden="true">◎</span><h3>Comprar KK direto</h3><p class="metric"><span id="direct"></span> <span class="metric-unit">KK</span></p><p id="direct-detail" class="metric-note"></p><div class="meter" aria-hidden="true"><span id="direct-meter"></span></div></article>
+            <article class="metric-card dd-card"><span class="metric-icon" aria-hidden="true">◇</span><h3>Comprar DD e revender</h3><p class="metric"><span id="resold"></span> <span class="metric-unit">KK</span></p><p id="resold-detail" class="metric-note"></p><div class="meter" aria-hidden="true"><span id="dd-meter"></span></div></article>
+          </div>
+          <div class="panel breakdown"><div class="breakdown-title"><h3>Por dentro da troca</h3><span>DD inteiros, contas transparentes</span></div><dl>
+            <div><dt>DD compráveis com seu orçamento</dt><dd id="affordable"></dd></div>
+            <div><dt>DD comprados e revendidos na simulação</dt><dd id="quantity"></dd></div>
+            <div><dt>Total gasto em DD</dt><dd id="spent"></dd></div>
+            <div><dt>Saldo que fica em reais</dt><dd id="balance"></dd></div>
+            <div><dt>Taxa descontada da revenda</dt><dd id="fee-kk"></dd></div>
+            <div class="difference-row"><dt>Diferença: revenda − compra direta</dt><dd id="difference"></dd></div>
+          </dl><p id="liquidity-note" class="context-note"></p></div>
+        </div>
+        <p id="live-status" class="sr-only" role="status" aria-live="polite" aria-atomic="true"></p>
+      </section>
+    </div>
+    <section class="scenarios-section" aria-labelledby="scenarios-title"><div class="section-title"><div><span class="step">02 / PREÇO MUDA, RESULTADO TAMBÉM</span><h2 id="scenarios-title">Três cenários, lado a lado</h2></div><p>Mesmo orçamento, taxa e limite de DD.<br>Cada cenário é uma alternativa independente.</p></div>
+      <div class="panel scenario-table-wrap"><table><caption class="sr-only">Comparação dos preços de 450 K, 475 K e 500 K por DD</caption><thead><tr><th scope="col">Revenda por DD</th><th scope="col">KK líquidos</th><th scope="col">Diferença em KK</th><th scope="col">Variação</th><th scope="col">Melhor caminho</th></tr></thead><tbody id="scenarios"></tbody></table></div><p class="table-hint">No celular, deslize a tabela para ver todos os valores.</p>
+    </section>
+    <section class="equilibrium-grid" aria-label="Preços de equilíbrio"><article class="panel equilibrium"><span class="small-label">EQUILÍBRIO POR UNIDADE</span><h3 id="unit-equilibrium">—</h3><p>Preço bruto de revenda por DD que iguala o custo de comprar KK diretamente, considerando a taxa.</p></article><article class="panel equilibrium"><span class="small-label">EQUILÍBRIO DO ORÇAMENTO</span><h3 id="budget-equilibrium">—</h3><p>Preço bruto por DD para igualar os KK obtidos usando todo o orçamento na compra direta. Considera DD inteiros e o limite das ofertas.</p></article></section>
+    <section id="como-funciona" class="methodology" aria-labelledby="methodology-title"><div><span class="step">03 / ANTES DE NEGOCIAR</span><h2 id="methodology-title">A conta é exata.<br>A oferta pode mudar.</h2><p>Os resultados são estimativas com os valores que você informa, sem consulta ao market em tempo real.</p></div><div class="explanations">
+      <details open><summary>Liquidez: preço bom precisa de comprador</summary><p>Uma oferta precisa ter quantidade suficiente no preço simulado. Se informar 100 DD disponíveis, a compra e a revenda ficam limitadas a 100 DD, mesmo que seu orçamento compre mais. Em branco, assumimos que todos os DD compráveis podem ser vendidos. Zero significa nenhuma unidade disponível.</p><p>Os três cenários reutilizam o mesmo limite apenas para comparação. Confirme a quantidade real em cada preço.</p></details>
+      <details><summary>Taxas e dinheiro que sobra</summary><p>Aplicamos a taxa percentual sobre o total de moedas da revenda. Para ofertas de compra, use 0%, conforme a condição informada por você; para anúncios de venda, preencha a taxa aplicável. Não incluímos taxas fixas nem arredondamentos específicos do jogo.</p><p>O saldo em reais não é convertido em KK nem somado ao resultado da revenda. A recomendação compara apenas os KK obtidos agora. Comprar DD e usar a sobra em KK seria uma estratégia diferente.</p></details>
+      <details><summary>Unidades e fórmulas usadas</summary><p>1 K = 1.000 moedas. 1 KK = 1.000.000 de moedas = 1.000 K. Portanto, 500 K = 0,5 KK.</p><ul><li>DD compráveis = parte inteira de orçamento ÷ preço do DD.</li><li>DD usados = menor valor entre DD compráveis e limite informado.</li><li>KK direto = orçamento ÷ preço de 1 KK.</li><li>KK de revenda = DD usados × preço em K ÷ 1.000 × (1 − taxa ÷ 100).</li><li>Diferença = KK de revenda − KK direto; percentual = diferença ÷ KK direto × 100.</li><li>Equilíbrio por unidade = preço do DD ÷ preço de 1 KK × 1.000 ÷ (1 − taxa ÷ 100).</li><li>Equilíbrio do orçamento = KK direto ÷ DD usados × 1.000 ÷ (1 − taxa ÷ 100).</li></ul><p>A compra direta admite frações de KK. A revenda usa DD inteiros. Os valores exibidos são arredondados; o cálculo mantém a precisão. Com orçamento zero, não há comparação percentual; com taxa de 100%, não há preço de equilíbrio, e sem DD usados não há equilíbrio do orçamento.</p></details>
+    </div></section>
+    <footer><a class="brand footer-brand" href="#top">KK<span class="brand-or">ou</span>DD<span class="brand-dot">.</span></a><p>Calculadora independente para Poke Alliance.<br>Sem vínculo oficial com o jogo. Valores informados por você.</p><a href="#simulador">Voltar à calculadora ↑</a></footer>
+  </main>
+  <noscript><div class="noscript">Ative o JavaScript do navegador para usar a calculadora.</div></noscript>
+</body>
+</html>
