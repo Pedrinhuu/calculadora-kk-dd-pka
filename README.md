@@ -1,5 +1,7 @@
 # KK ou DD? — Calculadora Poke Alliance
 
+**[Abrir a calculadora online](https://calculadora-kk-dd-pka.vercel.app)** — acesso público, sem login.
+
 Calculadora responsiva em português brasileiro para comparar **compra direta de KK** com **compra de diamantes (DD) e revenda no market**. Site estático em HTML, CSS e JavaScript, sem dependências, banco de dados ou credenciais do jogo.
 
 > **Unidades:** 1 K = 1.000 moedas; 1 KK = 1.000.000 de moedas = 1.000 K. Portanto, **450 K = 0,45 KK**.
