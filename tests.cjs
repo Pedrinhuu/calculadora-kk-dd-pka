@@ -1,5 +1,5 @@
 const assert = require('node:assert/strict');
-const { defaults, validate, calculate } = require('./public/calculator.js');
+const { defaults, validate, calculate, calculateGoal, officialGoal } = require('./public/calculator.js');
 const base = validate(defaults).values;
 let cases = 0;
 const near = (actual, expected) => assert.ok(Math.abs(actual - expected) < 1e-8, `${actual} !== ${expected}`);
@@ -51,6 +51,58 @@ test('Aumentar a taxa nunca aumenta KK; limites conservam orçamento', () => {
     assert.ok(Number.isInteger(r.quantity)); assert.ok(r.quantity<=r.affordable);
     assert.ok(r.resold<=calculate({...v,fee:0}).resold+1e-8);
   }
+});
+const goal = (mode, overrides = {}) => {
+  const parsed = validate({ ...defaults, mode, ...overrides });
+  assert.equal(parsed.valid, true, JSON.stringify(parsed.errors));
+  return calculateGoal(parsed.values);
+};
+test('Meta de 200 KK: DD inteiros para cima, 445 DD e R$ 267', () => {
+  const r=goal('kk'); near(r.directCost,300); assert.equal(r.quantity,445); near(r.viaCost,267);
+  near(r.receivedKK,200.25); near(r.extraKK,.25); near(r.saving,33); near(r.percent,11); assert.equal(r.winner,'via');
+  const exact=goal('kk',{resale:'500'}); assert.equal(exact.quantity,400); near(exact.receivedKK,200); near(exact.viaCost,240);
+});
+test('Meta de KK respeita taxa, quantidade e impossibilidade', () => {
+  const r=goal('kk',{fee:'10'}); assert.equal(r.quantity,494); near(r.receivedKK,200.07); near(r.viaCost,296.4);
+  const limited=goal('kk',{available:'444'}); assert.equal(limited.feasible,false); assert.equal(limited.winner,'direct'); assert.equal(limited.saving,null);
+  assert.equal(goal('kk',{available:'445'}).feasible,true);
+  for(const overrides of [{fee:'100'},{resale:'0'}]) { const bad=goal('kk',overrides); assert.equal(bad.viaCost,null); assert.equal(bad.winner,'direct'); }
+});
+test('Meta de 500 DD: jogador, KK e loja oficial', () => {
+  const r=goal('dd'); near(r.directCost,300); near(r.requiredKK,250); near(r.viaCost,375);
+  assert.equal(r.official.base,385); assert.equal(r.official.total,500); near(r.official.cost,385); assert.equal(r.winner,'direct');
+  const noCoupon=goal('dd',{coupon:false}); assert.equal(noCoupon.official.base,400); assert.equal(noCoupon.official.total,520);
+});
+test('Loja aplica faixa aos DD pagos e escolhe menor compra entre faixas', () => {
+  const r=officialGoal(400,1,true); assert.equal(r.base,308); assert.equal(r.bonus,30); assert.equal(r.total,400);
+  const jump=officialGoal(520,1,true); assert.equal(jump.base,400); assert.equal(jump.total,560); assert.equal(jump.bonus,40);
+  for(const coupon of [false,true]) for(let target=1;target<=800;target++) {
+    const result=officialGoal(target,1,coupon);
+    let min=1;
+    const total=n=>Math.floor(n*(100+(n>=400?30:n>=200?20:n>=150?15:n>=100?10:0)+(coupon?10:0))/100);
+    while(total(min)<target) min++;
+    assert.equal(result.base,min,`Meta ${target}, cupom ${coupon}`);
+    assert.ok(result.total>=target);
+  }
+});
+test('Market e loja podem ganhar; ofertas insuficientes não vencem', () => {
+  const market=goal('dd',{marketBuy:'300'}); assert.equal(market.winner,'via'); near(market.requiredKK,150); near(market.viaCost,225);
+  const limited=goal('dd',{marketBuy:'300',buyAvailable:'499'}); assert.equal(limited.feasible,false); assert.equal(limited.winner,'direct');
+  const shop=goal('dd',{ddPrice:'0,90'}); assert.equal(shop.winner,'via');
+  const shopWins=goal('dd',{ddPrice:'0,90',marketBuy:'600'}); assert.equal(shopWins.winner,'official');
+  const tie=goal('dd',{marketBuy:'400'}); assert.equal(tie.winner,'tie'); assert.deepEqual(tie.winners,['direct','via']);
+});
+test('Pagamentos inversos arredondam centavos para cima', () => {
+  near(goal('kk',{targetKK:'0,001',kkPrice:'1,50'}).directCost,.01);
+  const r=goal('dd',{targetDD:'1',marketBuy:'1',kkPrice:'1,50'}); near(r.requiredKK,.001); near(r.viaCost,.01);
+  const bounds=goal('kk',{targetKK:'1000000',resale:'0,001',fee:'99,999'}); assert.equal(bounds.feasible,false); assert.equal(bounds.viaCost,null);
+});
+test('Validação por modo ignora campos inativos e rejeita metas inválidas', () => {
+  assert.equal(validate({...defaults,mode:'kk',budget:'',targetDD:'abc',marketBuy:''}).valid,true);
+  assert.equal(validate({...defaults,mode:'dd',fee:'abc',resale:'',budget:''}).valid,true);
+  for(const mode of ['kk','dd']) for(const target of ['0','-1','']) assert.equal(validate({...defaults,mode,[mode==='kk'?'targetKK':'targetDD']:target}).valid,false);
+  assert.equal(validate({...defaults,mode:'dd',targetDD:'1,5'}).valid,false);
+  assert.equal(validate({...defaults,mode:'dd',marketBuy:'0'}).valid,false);
 });
 console.log(`${cases} grupos de testes passaram.`);
 
